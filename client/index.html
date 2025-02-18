@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Image Locator</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-   
-</head>
-<body>
-    <div id="folders"></div>
-    <div id="files"></div>
-    <script src='main.js' type="module"></script>
-</body>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+  </head>
+  <body>
+    <div id="structure">
+      <div id="folders"></div>
+      <div id="manager">
+        <form id="search-bar">
+          <input type="text" id="search" placeholder="Pesquisar" />
+        </form>
+        <div id="files"></div>
+      </div>
+    </div>
+
+    <div id="context-menu">
+      <button id="copy-title">Copiar título</button>
+      <button id="copy-relative-path">Copiar caminho relativo</button>
+    </div>
+    <script src="main.js" type="module"></script>
+  </body>
 </html>

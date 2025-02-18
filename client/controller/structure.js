@@ -1,3 +1,6 @@
+import { URL_BASE } from "../constants.js";
+import renderStructure from "../domain/structure.js";
+
 /**
  * @typedef {Object} FolderNode
  * @property {string} name - Name of the folder.
@@ -11,9 +14,14 @@
  */
 
 async function getFoldersStructure() {
-  const response = await fetch("http://localhost:3000/structure");
+  const response = await fetch(`${URL_BASE}/structure`);
   const data = await response.json();
   return data;
 }
+
+export const mountStructurePromise = async () => {
+  const structure = await getFoldersStructure();
+  renderStructure(structure);
+};
 
 export default getFoldersStructure;
