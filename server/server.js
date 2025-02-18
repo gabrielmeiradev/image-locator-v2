@@ -15,8 +15,8 @@ app.get("/structure", async (req, res) => {
 });
 
 app.get("/folder", (req, res) => {
-  const { path, page } = req.query;
-  const folder = getFilesByFolder(path, page);
+  const { path, page, per_page } = req.query;
+  const folder = getFilesByFolder(path, page, per_page);
   res.json(folder);
 });
 
