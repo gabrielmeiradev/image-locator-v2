@@ -9,6 +9,7 @@
 
 import { formatFileSize } from "../utils/formatFileSize.js";
 import { formatDate } from "../utils/formatFileDate.js";
+import { currentPage, loadMore } from "../controller/folder.js";
 
 /**
  * @typedef {Object} Image
@@ -23,10 +24,14 @@ const copyRelativePathButton = document.querySelector("#copy-relative-path");
 const copyAbsolutePathButton = document.querySelector("#copy-title");
 
 const openContextMenu = (event, file) => {
-  contextMenu.style.display = "flex";
-  contextMenu.style.left = `${event.pageX}px`;
-  contextMenu.style.top = `${event.pageY}px`;
+  console.log(event.clientX);
 
+  const x = event.clientX;
+  const y = event.clientY;
+
+  contextMenu.style.display = "flex";
+  contextMenu.style.left = `${x}px`;
+  contextMenu.style.top = `${y}px`;
   copyRelativePathButton.onclick = () => {
     navigator.clipboard.writeText(`${file.relativePath}`);
     const originalText = copyRelativePathButton.innerText;
@@ -57,11 +62,25 @@ window.onclick = (event) => {
     closeContextMenu();
   }
 };
+const filesContainer = document.querySelector("#files");
+
+export let lastPathRendered = "";
 
 export default function renderFolder(folder) {
-  const filesContainer = document.querySelector("#files");
-  filesContainer.innerHTML = "";
+  if (
+    folder.path != lastPathRendered ||
+    currentPage == folder.page ||
+    window.appState == "search"
+  ) {
+    filesContainer.innerHTML = "";
+  }
 
+  appendFolder(folder);
+
+  lastPathRendered = folder.path;
+}
+
+export function appendFolder(folder) {
   folder.files.forEach((file) => {
     const fileElement = document.createElement("div");
     fileElement.classList.add("file");
@@ -69,11 +88,9 @@ export default function renderFolder(folder) {
     <div class="img-container">
       <img src="/uploads/${
         file.relativePath
-      }" alt="File icon" class="file-img" loading="lazy” />
+      }" alt="File icon" class="file-img" loading="lazy" />
       <span class="file-info">
-        <span>
           ${formatFileSize(file.size)} - ${formatDate(file.createdAt)}
-        </span>
       </span>
     </div>
 
@@ -88,3 +105,16 @@ export default function renderFolder(folder) {
     filesContainer.appendChild(fileElement);
   });
 }
+
+const canLoadMore = () => {
+  return (
+    filesContainer.lastElementChild.getBoundingClientRect().bottom <
+      window.innerHeight + 100 && appState !== "search"
+  );
+};
+
+window.onscroll = async () => {
+  if (canLoadMore()) {
+    await loadMore();
+  }
+};

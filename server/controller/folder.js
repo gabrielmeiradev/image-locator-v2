@@ -26,7 +26,7 @@ import path from "path";
 export default function getFilesByFolder(
   folderPath,
   page = 1,
-  filesPerPage = 1000
+  filesPerPage = 14
 ) {
   try {
     const rootPath = process.env.ABSOLUTE_UPLOADS_DIR;

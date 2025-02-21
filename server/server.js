@@ -45,9 +45,14 @@ app.get("/search", (req, res) => {
   try {
     const allFiles = readFilesRecursively(imagesDirectory);
 
-    const filteredFiles = allFiles.filter(
-      (file) => path.basename(file).toLowerCase().includes(query) || query == ""
-    );
+    const filteredFiles = allFiles.filter((file) => {
+      const isImage = /\.(jpg|jpeg|png|gif)$/i.test(file);
+      console.log(isImage);
+      return (
+        (path.basename(file).toLowerCase().includes(query) || query == "") &&
+        isImage
+      );
+    });
 
     if (filteredFiles.length === 0) {
       return res

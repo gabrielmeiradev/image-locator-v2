@@ -1,3 +1,7 @@
+export const setAppState = (state) => {
+  window.appState = state;
+};
+
 import { mountFolderPromise } from "./controller/folder.js";
 import search from "./controller/search.js";
 import { mountStructurePromise } from "./controller/structure.js";
@@ -13,5 +17,6 @@ searchBar.addEventListener("submit", async (e) => {
   e.preventDefault();
   unselectFolders();
   const searchResult = await search(searchInput.value);
+  console.log(window.appState);
   renderFolder(searchResult);
 });

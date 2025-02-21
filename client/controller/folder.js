@@ -1,5 +1,9 @@
 import { URL_BASE } from "../constants.js";
-import renderFolder from "../domain/folder.js";
+import renderFolder, {
+  appendFolder,
+  lastPathRendered,
+} from "../domain/folder.js";
+import { setAppState } from "../main.js";
 
 /**
  * @typedef {Object} Folder
@@ -18,12 +22,33 @@ import renderFolder from "../domain/folder.js";
  * @property {Date} createdAt - The creation date of the image file.
  */
 
-export default async function getFilesByFolder(path) {
-  const response = await fetch(`${URL_BASE}/folder?path=${path}`);
+export default async function getFilesByFolder(path, page) {
+  let url = `${URL_BASE}/folder?path=${path}`;
+  if (page) url += `&page=${page}`;
+  const response = await fetch(url);
   return await response.json();
 }
 
-export const mountFolderPromise = async (path = "") => {
-  const folder = await getFilesByFolder(path);
+export let currentPage = 1;
+
+export const loadMore = async () =>
+  await mountFolderPromise(lastPathRendered, currentPage + 1);
+
+export const mountFolderPromise = async (path = "", page) => {
+  setAppState("folder");
+
+  if (path === lastPathRendered && currentPage == page) return;
+  if (path != lastPathRendered) currentPage = 1;
+
+  const folder = await getFilesByFolder(path, page);
+
+  if (page) {
+    if (page > folder.totalPages) return;
+
+    currentPage = page;
+
+    return appendFolder(folder);
+  }
+
   renderFolder(folder);
 };
